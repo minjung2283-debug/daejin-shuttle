@@ -67,11 +67,11 @@ export default function App() {
         <p className="font-mono text-[10px] tracking-[3px] text-blue-500 uppercase mb-3 opacity-80">
           Daejin Univ · Shuttle Finder
         </p>
+        <p className="mt-2 text-xs text-slate-400 font-light">PL lab</p>
         <h1 className="text-[26px] font-black tracking-tight leading-tight text-slate-900">
           셔틀 타면<br />
           <em className="not-italic text-blue-500">더 빠릅니다</em>
         </h1>
-        <p className="mt-2 text-xs text-slate-400 font-light">2026학년도 1학기 · 하교 경로 최적화</p>
       </header>
 
       {!import.meta.env.VITE_KAKAO_KEY && (
