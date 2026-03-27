@@ -28,8 +28,7 @@ export default async function handler(req, res) {
       return res.status(200).json({ totalTime: best.info.totalTime })
     }
 
-    // 디버그: ODsay 원본 응답 포함해서 반환
-    return res.status(200).json({ totalTime: null, _debug: data })
+    return res.status(200).json({ totalTime: null })
   } catch (e) {
     return res.status(500).json({ error: e.message })
   }
