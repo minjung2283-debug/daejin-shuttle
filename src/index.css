@@ -32,7 +32,7 @@
   }
 
   html, body {
-    @apply bg-slate-50 text-foreground;
+    @apply bg-white text-foreground;
     margin: 0;
     font-family: 'Noto Sans KR', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;

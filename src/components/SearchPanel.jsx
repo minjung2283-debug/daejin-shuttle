@@ -1,18 +1,12 @@
-import Autocomplete from './Autocomplete'
 import { Button } from './ui/button'
 import { Card } from './ui/card'
 import { cn } from '@/lib/utils'
 
 const DAYS = ['월', '화', '수', '목', '금']
 
-export default function SearchPanel({ kakaoKey, day, time, onDayChange, onTimeChange, onDestSelect, onDestClear, onSearch }) {
+export default function SearchPanel({ day, time, onDayChange, onTimeChange, onSearch }) {
   return (
     <>
-      <Card className="p-4 mb-2.5">
-        <p className="font-mono text-[10px] tracking-[2px] text-slate-400 uppercase mb-3">목적지</p>
-        <Autocomplete kakaoKey={kakaoKey} onSelect={onDestSelect} onClear={onDestClear} />
-      </Card>
-
       <Card className="p-4 mb-2.5">
         <p className="font-mono text-[10px] tracking-[2px] text-slate-400 uppercase mb-3">요일 · 출발 가능 시각</p>
         <div className="grid grid-cols-[auto_1fr] gap-2.5 items-end">

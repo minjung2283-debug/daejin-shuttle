@@ -7,7 +7,6 @@ export default function Autocomplete({ kakaoKey, onSelect, onClear }) {
   const [items, setItems] = useState([])
   const [focused, setFocused] = useState(-1)
   const [isOpen, setIsOpen] = useState(false)
-  const [inputFocused, setInputFocused] = useState(false)
   const [hoveredIdx, setHoveredIdx] = useState(-1)
   const timer = useRef(null)
   const wrapRef = useRef(null)
@@ -64,18 +63,12 @@ export default function Autocomplete({ kakaoKey, onSelect, onClear }) {
         <input
           type="text"
           value={query}
-          placeholder="예) 여의도 한강공원, 강남역, 홍대입구…"
+          placeholder="목적지 입력"
           onChange={handleInput}
           onKeyDown={handleKeyDown}
-          onFocus={() => setInputFocused(true)}
-          onBlur={() => setInputFocused(false)}
           autoComplete="off"
           spellCheck={false}
-          className={cn(
-            'w-full bg-slate-50 border border-slate-200 rounded-lg text-slate-800 text-[15px] font-sans',
-            'px-3.5 py-3 pr-10 outline-none transition-shadow',
-            inputFocused && 'ring-2 ring-blue-400 border-transparent'
-          )}
+          className="w-full bg-transparent text-[11px] text-slate-400 pr-6 outline-none placeholder:text-slate-400"
         />
         {query && (
           <button

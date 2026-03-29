@@ -2,6 +2,7 @@ import { useState } from 'react'
 import ApiKeyBanner from './components/ApiKeyBanner'
 import SearchPanel from './components/SearchPanel'
 import ResultList from './components/ResultList'
+import Autocomplete from './components/Autocomplete'
 import { ROUTES } from './data/routes'
 import { fetchOdsayTransit } from './utils/api'
 import { toMin, todayDay, nowTime } from './utils/time'
@@ -72,7 +73,7 @@ export default function App() {
   }
 
   return (
-    <div className="max-w-[440px] mx-auto px-4 pb-20 min-h-screen bg-slate-50">
+    <div className="max-w-[440px] mx-auto px-4 pb-20 min-h-screen bg-white">
       {/* Header */}
       <header className="pt-10 pb-7 text-center">
         <p className="mt-2 text-[11px] text-slate-400 font-soli mb-3">PL lab</p>
@@ -88,11 +89,29 @@ export default function App() {
         />
       )}
 
-      {/* 출발지 고정 */}
-      <div className="flex items-center gap-2.5 bg-emerald-50 border border-emerald-200 rounded-xl px-3.5 py-3 mb-2.5">
-        <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399] shrink-0 animate-glow" />
-        <span className="text-[11px] text-slate-500">출발지 고정</span>
-        <span className="ml-auto text-[13px] font-bold text-emerald-600">대진대학교</span>
+      {/* 출발지 + 목적지 카드 */}
+      <div className="border border-slate-200 rounded-xl overflow-visible mb-2.5">
+        {/* 출발지 고정 행 */}
+        <div className="flex items-center gap-2.5 px-3.5 h-[44px] border-b border-slate-100">
+          <span className="w-2 h-2 rounded-full shadow-[0_0_6px_rgba(52,211,153,0.7)] shrink-0" />
+          <span className="text-[11px] text-slate-400">출발지 고정</span>
+          <span className="ml-auto text-[13px] font-bold text-slate-500">대진대학교</span>
+        </div>
+        {/* 목적지 행 */}
+        <div className="flex items-center gap-2.5 px-3.5 h-[44px]">
+          <span className="w-2 h-2 rounded-full shadow-[0_0_6px_rgba(248,113,113,0.7)] shrink-0" />
+          {destPlace ? (
+            <>
+              <span className="text-[11px] text-slate-400">목적지</span>
+              <span className="ml-auto text-[13px] font-bold text-slate-500 truncate">{destPlace.name}</span>
+              <button onClick={() => setDestPlace(null)} className="text-slate-300 hover:text-slate-500 text-xs shrink-0">✕</button>
+            </>
+          ) : (
+            <div className="flex-1 min-w-0">
+              <Autocomplete kakaoKey={kakaoKey} onSelect={setDestPlace} onClear={() => setDestPlace(null)} />
+            </div>
+          )}
+        </div>
       </div>
 
       <SearchPanel
@@ -100,8 +119,6 @@ export default function App() {
         day={day} time={time}
         onDayChange={setDay}
         onTimeChange={setTime}
-        onDestSelect={setDestPlace}
-        onDestClear={() => setDestPlace(null)}
         onSearch={handleSearch}
       />
 
