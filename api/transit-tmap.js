@@ -13,10 +13,11 @@ export default async function handler(req, res) {
   }
 
   try {
-    const response = await fetch('https://apis.openapi.sk.com/transit/routes/', {
+    const response = await fetch('https://apis.openapi.sk.com/transit/routes', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'accept': 'application/json',
+        'content-type': 'application/json',
         'appKey': tmapKey,
       },
       body: JSON.stringify({
@@ -29,8 +30,13 @@ export default async function handler(req, res) {
     })
 
     const data = await response.json()
-    console.log('[TMap raw]', JSON.stringify(data).slice(0, 500))
-    const itineraries = data.metaData?.plan?.itineraries ?? data.plan?.itineraries
+    console.log('[TMap raw]', JSON.stringify(data).slice(0, 800))
+
+    if (data.error) {
+      return res.status(200).json({ totalTime: null, _error: data.error })
+    }
+
+    const itineraries = data.metaData?.plan?.itineraries
 
     if (itineraries?.length > 0) {
       const best = itineraries.reduce((a, b) =>
