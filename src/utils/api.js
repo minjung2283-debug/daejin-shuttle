@@ -22,8 +22,12 @@ export async function fetchTmapTransit(origin, dest) {
       `&ex=${dest.x}&ey=${dest.y}`
     const res = await fetch(url)
     const data = await res.json()
+    if (data._error || data.totalTime == null) {
+      console.warn('[TMap 클라이언트]', JSON.stringify(data))
+    }
     return data.totalTime ?? null
-  } catch {
+  } catch (e) {
+    console.warn('[TMap 클라이언트 에러]', e.message)
     return null
   }
 }
