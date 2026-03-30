@@ -36,9 +36,7 @@ export default function ResultList({ results, destPlace, loading, pureTransitMin
           key={r.route.id}
           result={r}
           destPlace={destPlace}
-          isBest={i === 0 && r.total !== null}
           index={i}
-          pureTransitMin={pureTransitMin}
         />
       ))}
     </div>

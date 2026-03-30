@@ -2,7 +2,7 @@ import { addMin, fmtDur } from '../utils/time'
 import { Badge } from './ui/badge'
 import { cn } from '@/lib/utils'
 
-export default function RouteCard({ result, destPlace, isBest, index, pureTransitMin }) {
+export default function RouteCard({ result, destPlace, index }) {
   const { route, stop, nextShuttle, wait, shuttleDur, transitDur, total } = result
   const depTime = nextShuttle
   const arrTime = addMin(depTime, shuttleDur)
@@ -16,12 +16,7 @@ export default function RouteCard({ result, destPlace, isBest, index, pureTransi
 
   return (
     <div
-      className={cn(
-        'bg-white rounded-xl overflow-hidden mb-2.5 animate-fade-up',
-        isBest
-          ? 'border border-blue-300 shadow-[0_4px_16px_rgba(59,130,246,0.12)]'
-          : 'border border-slate-200 shadow-sm'
-      )}
+      className="bg-white rounded-xl overflow-hidden mb-2.5 animate-fade-up border border-slate-200 shadow-sm"
       style={{ animationDelay: `${index * 0.07}s` }}
     >
       {/* 헤더 */}
@@ -29,7 +24,6 @@ export default function RouteCard({ result, destPlace, isBest, index, pureTransi
         <div className="flex-1">
           <div className="flex items-center gap-1.5 flex-wrap">
             <span className="text-[13px] font-bold text-slate-900">{route.name}</span>
-            {isBest && <Badge variant="default" className="text-[9px] tracking-wide">⚡ 최적</Badge>}
           </div>
           <p className="text-[11px] text-slate-400 mt-0.5">{route.fee.toLocaleString()}원 · {stop.name} 하차</p>
         </div>
@@ -92,18 +86,6 @@ export default function RouteCard({ result, destPlace, isBest, index, pureTransi
             </div>
           ))}
         </div>
-
-        {/* 대중교통 대비 */}
-        {pureTransitMin !== null && total !== null && (
-          <div className={`text-center text-[11px] py-1.5 rounded-lg mt-2 ${total < pureTransitMin ? 'bg-blue-50 text-blue-500 font-semibold' : 'bg-slate-50 text-slate-400'}`}>
-            {total < pureTransitMin
-              ? `대중교통 대비 ${fmtDur(pureTransitMin - total)} 단축`
-              : total === pureTransitMin
-                ? '대중교통과 동일한 소요시간'
-                : `대중교통보다 ${fmtDur(total - pureTransitMin)} 느림`
-            }
-          </div>
-        )}
 
         {/* 네이버 지도 */}
         <a
