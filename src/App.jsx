@@ -3,7 +3,7 @@ import SearchPanel from './components/SearchPanel'
 import ResultList from './components/ResultList'
 import Autocomplete from './components/Autocomplete'
 import { ROUTES } from './data/routes'
-import { fetchOdsayTransit } from './utils/api'
+import { fetchOdsayTransit, fetchTmapTransit } from './utils/api'
 import { toMin, todayDay, nowTime } from './utils/time'
 
 export default function App() {
@@ -42,17 +42,18 @@ export default function App() {
     // 대진대학교 좌표 (포천시 신북면)
     const DAEJIN_COORD = { x: 127.0638, y: 37.7315 }
 
-    // ODsay rate limit 방지: 4개씩 순차 처리 (대진대 → 목적지 호출 포함)
-    const allCoords = [...perStop.map(c => c.stop.coord), DAEJIN_COORD]
-    const allResults = []
-    for (let i = 0; i < allCoords.length; i += 4) {
+    // ODsay rate limit 방지: 4개씩 순차 처리 (셔틀 정류장 → 목적지)
+    const transitResults = []
+    for (let i = 0; i < perStop.length; i += 4) {
       const batch = await Promise.all(
-        allCoords.slice(i, i + 4).map(coord => fetchOdsayTransit(coord, destPlace))
+        perStop.slice(i, i + 4).map(c => fetchOdsayTransit(c.stop.coord, destPlace))
       )
-      allResults.push(...batch)
+      transitResults.push(...batch)
     }
-    const transitResults = allResults.slice(0, perStop.length)
-    setPureTransitMin(allResults[allResults.length - 1])
+
+    // T-Map으로 대진대 → 목적지 대중교통 시간 계산 (대기시간 포함)
+    const pureMin = await fetchTmapTransit(DAEJIN_COORD, destPlace)
+    setPureTransitMin(pureMin)
     setLoading(false)
 
     // Compute totals and keep best stop per route
