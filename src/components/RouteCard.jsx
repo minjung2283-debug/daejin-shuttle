@@ -50,7 +50,7 @@ export default function RouteCard({ result, destPlace, isBest, index, pureTransi
           <div className="flex-1 pb-2.5">
             <div className="font-mono text-xs text-blue-500 font-medium leading-none mb-0.5">{depTime} 출발</div>
             <div className="text-[13px] font-semibold text-slate-800">대진대학교</div>
-            <Badge variant="blue" className="mt-1 text-[10px]">🎫 예약 필수 · {route.fee.toLocaleString()}원</Badge>
+            <Badge variant="outline" className="mt-1 text-[10px]">예약 필수 · {route.fee.toLocaleString()}원</Badge>
           </div>
         </div>
 

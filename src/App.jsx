@@ -16,8 +16,8 @@ export default function App() {
   const [loading, setLoading]   = useState(false)
   const [pureTransitMin, setPureTransitMin] = useState(null)
 
-  // 대진대학교 좌표
-  const DAEJIN_COORD = { x: 127.0659, y: 37.7314 }
+  // 대진대학교 정문 좌표 (포천시 신북면)
+  const DAEJIN_COORD = { x: 127.0638, y: 37.7315 }
 
   const handleSearch = async () => {
     if (!kakaoKey) { alert('카카오 API 키를 먼저 입력해주세요.'); return }
@@ -56,7 +56,7 @@ export default function App() {
       const wait = toMin(c.nextShuttle) - nowMin
       const shuttleDur = c.stop.minsFromDep
       const transitDur = transitResults[i]
-      const total = transitDur !== null ? wait + shuttleDur + transitDur : null
+      const total = transitDur !== null ? shuttleDur + transitDur : null
       const entry = { ...c, wait, shuttleDur, transitDur, total }
       const prev = byRoute.get(c.route.id)
       if (!prev) { byRoute.set(c.route.id, entry); return }
