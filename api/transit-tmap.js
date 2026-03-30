@@ -13,7 +13,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const response = await fetch('https://apis.openapi.sk.com/transit/routes', {
+    const response = await fetch('https://apis.openapi.sk.com/transit/routes/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -29,13 +29,13 @@ export default async function handler(req, res) {
     })
 
     const data = await response.json()
-    const itineraries = data.metaData?.plan?.itineraries
+    const itineraries = data.metaData?.plan?.itineraries ?? data.plan?.itineraries
 
     if (itineraries?.length > 0) {
       const best = itineraries.reduce((a, b) =>
-        a.duration <= b.duration ? a : b
+        a.totalTime <= b.totalTime ? a : b
       )
-      return res.status(200).json({ totalTime: Math.round(best.duration / 60) })
+      return res.status(200).json({ totalTime: Math.round(best.totalTime / 60) })
     }
 
     return res.status(200).json({ totalTime: null })
