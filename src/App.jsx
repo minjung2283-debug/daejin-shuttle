@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import ApiKeyBanner from './components/ApiKeyBanner'
 import SearchPanel from './components/SearchPanel'
 import ResultList from './components/ResultList'
 import Autocomplete from './components/Autocomplete'
@@ -8,17 +7,17 @@ import { fetchOdsayTransit } from './utils/api'
 import { toMin, todayDay, nowTime } from './utils/time'
 
 export default function App() {
-  const [kakaoKey, setKakaoKey] = useState(
-    import.meta.env.VITE_KAKAO_KEY || localStorage.getItem('kakao_key') || ''
-  )
-  const [odsayKey, setOdsayKey] = useState(
-    import.meta.env.VITE_ODSAY_KEY || localStorage.getItem('odsay_key') || ''
-  )
+  const kakaoKey = import.meta.env.VITE_KAKAO_KEY || localStorage.getItem('kakao_key') || ''
+  const odsayKey = import.meta.env.VITE_ODSAY_KEY || localStorage.getItem('odsay_key') || ''
   const [day, setDay]   = useState(todayDay())
   const [time, setTime] = useState(nowTime())
   const [destPlace, setDestPlace] = useState(null)
   const [results, setResults]   = useState(null)
   const [loading, setLoading]   = useState(false)
+  const [pureTransitMin, setPureTransitMin] = useState(null)
+
+  // 대진대학교 좌표
+  const DAEJIN_COORD = { x: 127.0659, y: 37.7314 }
 
   const handleSearch = async () => {
     if (!kakaoKey) { alert('카카오 API 키를 먼저 입력해주세요.'); return }
@@ -41,11 +40,14 @@ export default function App() {
 
     setLoading(true)
     setResults(null)
+    setPureTransitMin(null)
 
-    const transitResults = await Promise.all(
-      perStop.map(c => fetchOdsayTransit(c.stop.coord, destPlace))
-    )
+    const [transitResults, pureMin] = await Promise.all([
+      Promise.all(perStop.map(c => fetchOdsayTransit(c.stop.coord, destPlace))),
+      fetchOdsayTransit(DAEJIN_COORD, destPlace),
+    ])
 
+    setPureTransitMin(pureMin)
     setLoading(false)
 
     // Compute totals and keep best stop per route
@@ -82,13 +84,6 @@ export default function App() {
         </p>
       </header>
 
-      {!import.meta.env.VITE_KAKAO_KEY && (
-        <ApiKeyBanner
-          onKakaoKey={k => setKakaoKey(k)}
-          onOdsayKey={k => setOdsayKey(k)}
-        />
-      )}
-
       {/* 출발지 + 목적지 카드 */}
       <div className="border border-slate-200 rounded-xl overflow-visible mb-2.5">
         {/* 출발지 고정 행 */}
@@ -122,7 +117,7 @@ export default function App() {
         onSearch={handleSearch}
       />
 
-      <ResultList results={results} destPlace={destPlace} loading={loading} />
+      <ResultList results={results} destPlace={destPlace} loading={loading} pureTransitMin={pureTransitMin} />
     </div>
   )
 }

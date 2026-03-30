@@ -2,7 +2,7 @@ import { addMin, fmtDur } from '../utils/time'
 import { Badge } from './ui/badge'
 import { cn } from '@/lib/utils'
 
-export default function RouteCard({ result, destPlace, isBest, index }) {
+export default function RouteCard({ result, destPlace, isBest, index, pureTransitMin }) {
   const { route, stop, nextShuttle, wait, shuttleDur, transitDur, total } = result
   const depTime = nextShuttle
   const arrTime = addMin(depTime, shuttleDur)
@@ -92,6 +92,18 @@ export default function RouteCard({ result, destPlace, isBest, index }) {
             </div>
           ))}
         </div>
+
+        {/* 대중교통 대비 */}
+        {pureTransitMin !== null && total !== null && (
+          <div className={`text-center text-[11px] py-1.5 rounded-lg mt-2 ${total < pureTransitMin ? 'bg-blue-50 text-blue-500 font-semibold' : 'bg-slate-50 text-slate-400'}`}>
+            {total < pureTransitMin
+              ? `대중교통 대비 ${fmtDur(pureTransitMin - total)} 단축`
+              : total === pureTransitMin
+                ? '대중교통과 동일한 소요시간'
+                : `대중교통보다 ${fmtDur(total - pureTransitMin)} 느림`
+            }
+          </div>
+        )}
 
         {/* 네이버 지도 */}
         <a
