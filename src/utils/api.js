@@ -22,9 +22,10 @@ export async function fetchOdsayTransit(origin, dest) {
       `&ex=${dest.x}&ey=${dest.y}`
     const res = await fetch(url)
     const data = await res.json()
-    if (data._debug) console.warn('[ODsay 경로 없음]', url, data._debug)
+    if (data._debug) console.warn('[ODsay 경로 없음]', url, JSON.stringify(data._debug))
     return data.totalTime ?? null
-  } catch {
+  } catch (e) {
+    console.warn('[ODsay 에러]', url, e.message)
     return null
   }
 }
