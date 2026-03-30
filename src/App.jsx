@@ -16,9 +16,6 @@ export default function App() {
   const [loading, setLoading]   = useState(false)
   const [pureTransitMin, setPureTransitMin] = useState(null)
 
-  // 대진대학교 정문 좌표 (포천시 신북면)
-  const DAEJIN_COORD = { x: 127.0638, y: 37.7315 }
-
   const handleSearch = async () => {
     if (!kakaoKey) { alert('카카오 API 키를 먼저 입력해주세요.'); return }
     if (!odsayKey)  { alert('ODsay API 키를 먼저 입력해주세요.'); return }
@@ -42,12 +39,18 @@ export default function App() {
     setResults(null)
     setPureTransitMin(null)
 
-    const [transitResults, pureMin] = await Promise.all([
-      Promise.all(perStop.map(c => fetchOdsayTransit(c.stop.coord, destPlace))),
-      fetchOdsayTransit(DAEJIN_COORD, destPlace),
-    ])
+    // ODsay rate limit 방지: 4개씩 순차 처리
+    const transitResults = []
+    for (let i = 0; i < perStop.length; i += 4) {
+      const batch = await Promise.all(
+        perStop.slice(i, i + 4).map(c => fetchOdsayTransit(c.stop.coord, destPlace))
+      )
+      transitResults.push(...batch)
+    }
 
-    setPureTransitMin(pureMin)
+    // 수락산역(대진대 인근 최초 지하철역) 기준 대중교통 시간
+    const nowonIdx = perStop.findIndex(c => c.route.id === 'nowon' && c.stop.name === '수락산역')
+    setPureTransitMin(nowonIdx >= 0 ? transitResults[nowonIdx] : null)
     setLoading(false)
 
     // Compute totals and keep best stop per route

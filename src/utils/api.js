@@ -22,12 +22,8 @@ export async function fetchOdsayTransit(origin, dest) {
       `&ex=${dest.x}&ey=${dest.y}`
     const res = await fetch(url)
     const data = await res.json()
-    if (!res.ok || data.error || data.totalTime == null) {
-      console.warn('[ODsay 문제]', url, JSON.stringify(data))
-    }
     return data.totalTime ?? null
-  } catch (e) {
-    console.warn('[ODsay 에러]', url, e.message)
+  } catch {
     return null
   }
 }
