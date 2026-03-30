@@ -26,6 +26,7 @@ export default async function handler(req, res) {
         count: 1,
         lang: 0,
         format: 'json',
+        searchDttm: new Date().toISOString().replace(/[-T:]/g, '').slice(0, 12),
       }),
     })
 
