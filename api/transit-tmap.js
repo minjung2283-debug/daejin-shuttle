@@ -26,7 +26,7 @@ export default async function handler(req, res) {
         count: 1,
         lang: 0,
         format: 'json',
-        searchDttm: new Date().toISOString().replace(/[-T:]/g, '').slice(0, 12),
+        searchDttm: new Date(Date.now() + 9 * 60 * 60 * 1000).toISOString().replace(/[-T:]/g, '').slice(0, 12),
       }),
     })
 
