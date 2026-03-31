@@ -7,7 +7,7 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Missing coordinates' })
   }
 
-  const odsayKey = process.env.VITE_ODSAY_KEY
+  const odsayKey = process.env.ODSAY_KEY
   if (!odsayKey) {
     return res.status(500).json({ error: 'ODsay API key not configured' })
   }

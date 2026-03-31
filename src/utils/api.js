@@ -1,16 +1,8 @@
-// 카카오 장소 검색
-export async function searchKakaoPlace(query, kakaoKey) {
-  const res = await fetch(
-    `https://dapi.kakao.com/v2/local/search/keyword.json?query=${encodeURIComponent(query)}&size=6`,
-    { headers: { Authorization: `KakaoAK ${kakaoKey}` } }
-  )
+// 카카오 장소 검색 (서버 프록시 경유)
+export async function searchKakaoPlace(query) {
+  const res = await fetch(`/api/search?query=${encodeURIComponent(query)}`)
   const data = await res.json()
-  return (data.documents || []).slice(0, 6).map(p => ({
-    name: p.place_name,
-    address: p.road_address_name || p.address_name || '',
-    x: parseFloat(p.x),
-    y: parseFloat(p.y),
-  }))
+  return data.places || []
 }
 
 // T-Map 대중교통 경로 (대진대 → 목적지) — 정확한 대기시간 포함

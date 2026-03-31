@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { searchKakaoPlace } from '../utils/api'
 import { cn } from '@/lib/utils'
 
-export default function Autocomplete({ kakaoKey, onSelect, onClear }) {
+export default function Autocomplete({ onSelect, onClear }) {
   const [query, setQuery] = useState('')
   const [items, setItems] = useState([])
   const [focused, setFocused] = useState(-1)
@@ -26,9 +26,8 @@ export default function Autocomplete({ kakaoKey, onSelect, onClear }) {
     clearTimeout(timer.current)
     if (v.trim().length < 2) { setIsOpen(false); return }
     timer.current = setTimeout(async () => {
-      if (!kakaoKey) return
       try {
-        const results = await searchKakaoPlace(v.trim(), kakaoKey)
+        const results = await searchKakaoPlace(v.trim())
         setItems(results)
         setIsOpen(results.length > 0)
         setFocused(-1)

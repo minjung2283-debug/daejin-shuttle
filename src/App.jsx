@@ -7,8 +7,6 @@ import { fetchOdsayTransit, fetchTmapTransit } from './utils/api'
 import { toMin, todayDay, nowTime } from './utils/time'
 
 export default function App() {
-  const kakaoKey = import.meta.env.VITE_KAKAO_KEY || localStorage.getItem('kakao_key') || ''
-  const odsayKey = import.meta.env.VITE_ODSAY_KEY || localStorage.getItem('odsay_key') || ''
   const [day, setDay]   = useState(todayDay())
   const [time, setTime] = useState(nowTime())
   const [destPlace, setDestPlace] = useState(null)
@@ -17,8 +15,6 @@ export default function App() {
   const [pureTransitMin, setPureTransitMin] = useState(null)
 
   const handleSearch = async () => {
-    if (!kakaoKey) { alert('카카오 API 키를 먼저 입력해주세요.'); return }
-    if (!odsayKey)  { alert('ODsay API 키를 먼저 입력해주세요.'); return }
     if (!destPlace) { alert('목적지를 선택해주세요.'); return }
     if (!time)      { alert('출발 가능 시각을 입력해주세요.'); return }
 
@@ -109,14 +105,13 @@ export default function App() {
             </>
           ) : (
             <div className="flex-1 min-w-0">
-              <Autocomplete kakaoKey={kakaoKey} onSelect={setDestPlace} onClear={() => setDestPlace(null)} />
+              <Autocomplete onSelect={setDestPlace} onClear={() => setDestPlace(null)} />
             </div>
           )}
         </div>
       </div>
 
       <SearchPanel
-        kakaoKey={kakaoKey}
         day={day} time={time}
         onDayChange={setDay}
         onTimeChange={setTime}

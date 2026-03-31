@@ -7,7 +7,7 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Missing coordinates' })
   }
 
-  const tmapKey = process.env.VITE_TMAP_KEY
+  const tmapKey = process.env.TMAP_KEY
   if (!tmapKey) {
     return res.status(500).json({ error: 'T-Map API key not configured' })
   }

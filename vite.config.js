@@ -9,15 +9,46 @@ export default defineConfig(({ mode }) => {
     plugins: [
       react(),
       {
-        name: 'api-transit',
+        name: 'api-dev',
         configureServer(server) {
+          // /api/search — 카카오 장소 검색 프록시
+          server.middlewares.use('/api/search', async (req, res) => {
+            const url = new URL(req.url, 'http://localhost')
+            const query = url.searchParams.get('query')
+            const kakaoKey = env.KAKAO_KEY
+
+            if (!query) {
+              res.statusCode = 400
+              res.end(JSON.stringify({ error: 'Missing query' }))
+              return
+            }
+
+            try {
+              const apiUrl = `https://dapi.kakao.com/v2/local/search/keyword.json?query=${encodeURIComponent(query)}&size=6`
+              const response = await fetch(apiUrl, { headers: { Authorization: `KakaoAK ${kakaoKey}` } })
+              const data = await response.json()
+              const places = (data.documents || []).slice(0, 6).map(p => ({
+                name: p.place_name,
+                address: p.road_address_name || p.address_name || '',
+                x: parseFloat(p.x),
+                y: parseFloat(p.y),
+              }))
+              res.setHeader('Content-Type', 'application/json')
+              res.end(JSON.stringify({ places }))
+            } catch (e) {
+              res.statusCode = 500
+              res.end(JSON.stringify({ error: e.message }))
+            }
+          })
+
+          // /api/transit — ODsay 대중교통 경로 프록시
           server.middlewares.use('/api/transit', async (req, res) => {
             const url = new URL(req.url, 'http://localhost')
             const sx = url.searchParams.get('sx')
             const sy = url.searchParams.get('sy')
             const ex = url.searchParams.get('ex')
             const ey = url.searchParams.get('ey')
-            const odsayKey = env.VITE_ODSAY_KEY
+            const odsayKey = env.ODSAY_KEY
 
             try {
               const apiUrl =
